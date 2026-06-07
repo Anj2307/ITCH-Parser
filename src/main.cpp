@@ -4,7 +4,7 @@
 #include "decoder.h"
 
 int main() {
-    FileReader reader("data/your_file_name_here");
+    FileReader reader("data/01302019.NASDAQ_ITCH50");
     
     if (!reader.is_open()) {
         std::cerr << "Failed to open file" << std::endl;
