@@ -9,6 +9,7 @@ include_directories(include)
 add_executable(itch_parser
     src/main.cpp
     src/file_reader.cpp
+    src/decoder.cpp
 )
 
 target_link_libraries(itch_parser ws2_32)

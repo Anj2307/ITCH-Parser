@@ -1,5 +1,7 @@
 #include "decoder.h"
 #include <vector>
+#include <cstring>
+#include <winsock2.h>
 #include "message_types.h"
 
 char Decoder:: get_message_type(const std:: vector<uint8_t> & buf){
