@@ -13,28 +13,50 @@ int main() {
 
     Decoder decoder;
     std::vector<uint8_t> buf;
-    int add_order_count = 0;
 
+    int add_orders    = 0;
+    int executed      = 0;
+    int cancelled     = 0;
+    int deleted       = 0;
+    int replaced      = 0;
+    int other         = 0;
+    int order= 0;
+    int debug_count=0;
     while (reader.next_message(buf)) {
+
         char type = decoder.get_message_type(buf);
-        
-        if (type == 'A') {
-            AddOrderMsg msg = decoder.decode_add_order(buf);
-            
-            if (add_order_count < 5) {
-                std::cout << "Stock Locate: " << msg.stock_locate << std::endl;
-                std::cout << "Side: " << msg.side << std::endl;
-                std::cout << "Shares: " << msg.shares << std::endl;
-                std::cout << "Price: " << msg.price / 10000.0 << std::endl;
-                std::cout << "Stock: ";
-                for (int i = 0; i < 8; i++) std::cout << msg.stock[i];
-                std::cout << std::endl;
-                std::cout << "---" << std::endl;
-            }
-            add_order_count++;
+
+        if (debug_count < 10) {
+        std::cout << "buf[0] = " << (int)buf[0] 
+                  << " type = " << type 
+                  << " buf size = " << buf.size() << std::endl;
+        debug_count++;
+    }
+        switch(type) {
+            case 'A': decoder.decode_add_order(buf);      add_orders++; break;
+            case 'F': decoder.decode_add_order(buf);      add_orders++; break;
+            case 'E': decoder.decode_order_executed(buf); executed++;   break;
+            case 'X': decoder.decode_order_cancel(buf);   cancelled++;  break;
+            case 'D': decoder.decode_order_delete(buf);   deleted++;    break;
+            case 'U': decoder.decode_order_replace(buf);  replaced++;   break;
+            default:  other++; break;
         }
+        // order++;
+        // std::cout<<"order no. "<<order<<std::endl;
+        //  std::cout << "Add Orders:  " << add_orders << std::endl;
+        // std::cout << "Executed:    " << executed   << std::endl;
+        // std::cout << "Cancelled:   " << cancelled  << std::endl;
+        // std::cout << "Deleted:     " << deleted    << std::endl;
+        // std::cout << "Replaced:    " << replaced   << std::endl;
+        // std::cout << "Other:       " << other      << std::endl;
     }
 
-    std::cout << "Total Add Orders: " << add_order_count << std::endl;
+    std::cout << "Add Orders:  " << add_orders << std::endl;
+    std::cout << "Executed:    " << executed   << std::endl;
+    std::cout << "Cancelled:   " << cancelled  << std::endl;
+    std::cout << "Deleted:     " << deleted    << std::endl;
+    std::cout << "Replaced:    " << replaced   << std::endl;
+    std::cout << "Other:       " << other      << std::endl;
+
     return 0;
 }
