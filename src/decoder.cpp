@@ -191,8 +191,104 @@ OrderReplaceMsg Decoder:: decode_order_replace(const std:: vector<uint8_t>&buf){
     msg.shares = shares;
     msg.price=price;
     return msg;
+}
+SystemEventMsg Decoder:: decode_system_event(const std:: vector<uint8_t>&buf){
+    uint16_t stock_locate;
+    memcpy(&stock_locate, buf.data() + 1, 2);
+    stock_locate = ntohs(stock_locate);
 
+    uint64_t timestamp;
+    memcpy(&timestamp, buf.data() + 5, 6);
+    timestamp = ntohll(timestamp);
+
+    uint16_t tracking_number;
+    memcpy(&tracking_number, buf.data() + 3, 2);
+    tracking_number = ntohs(tracking_number);
+
+    char event_code=static_cast<char>(buf[11]);
 
     
+    SystemEventMsg msg;
+    msg.stock_locate = stock_locate;
+    msg.tracking_number = tracking_number;
+    msg.timestamp = timestamp;
+    msg.event_code=event_code;
+    return msg; 
+
 }
 
+StockDirectoryMsg Decoder:: decode_stock_directory(const std:: vector<uint8_t>&buf){
+    uint16_t stock_locate;
+    memcpy(&stock_locate, buf.data() + 1, 2);
+    stock_locate = ntohs(stock_locate);
+
+    uint16_t tracking_number;
+    memcpy(&tracking_number, buf.data() + 3, 2);
+    tracking_number = ntohs(tracking_number);
+
+    uint64_t timestamp = 0;
+    memcpy(&timestamp, buf.data() + 5, 6);
+    timestamp = ntohll(timestamp);
+    
+    char stock[8];
+    memcpy(stock, buf.data() + 11, 8);
+
+    char market_category = static_cast<char>(buf[19]);
+
+    char financial_status_indicator = static_cast<char>(buf[20]);
+
+    uint32_t round_lot_size;
+    memcpy(&round_lot_size, buf.data() + 21, 4);
+    round_lot_size = ntohl(round_lot_size);
+
+    char round_lots_only = static_cast<char>(buf[25]);
+
+    char issue_classification = static_cast<char>(buf[26]);
+
+    char issue_sub_type[2];
+    memcpy(&issue_sub_type, buf.data() + 27, 2);
+
+    char authenticity = static_cast<char>(buf[29]);
+
+    char short_sale_threshold_indicator = static_cast<char>(buf[30]);
+
+    char ipo_flag = static_cast<char>(buf[31]);
+
+    char luld_reference_price_tier = static_cast<char>(buf[32]);
+
+    char etp_flag = static_cast<char>(buf[33]);
+
+    uint32_t etp_leverage_factor;
+    memcpy(&etp_leverage_factor, buf.data() + 34, 4);
+    etp_leverage_factor = ntohl(etp_leverage_factor);
+
+    char inverse_indicator = static_cast<char>(buf[38]);
+
+    
+    StockDirectoryMsg msg;
+    msg.stock_locate = stock_locate;
+    msg.tracking_number = tracking_number;
+    msg.timestamp = timestamp;
+
+    memcpy(msg.stock, stock, 8);
+
+    msg.market_category = market_category;
+    msg.financial_status_indicator = financial_status_indicator;
+
+    msg.round_lot_size = round_lot_size;
+    msg.round_lots_only = round_lots_only;
+    msg.issue_classification = issue_classification;
+
+    memcpy(msg.issue_sub_type, issue_sub_type, 2);
+
+    msg.authenticity = authenticity;
+    msg.short_sale_threshold_indicator = short_sale_threshold_indicator;
+    msg.ipo_flag = ipo_flag;
+    msg.luld_reference_price_tier = luld_reference_price_tier;
+    msg.etp_flag = etp_flag;
+
+    msg.etp_leverage_factor = etp_leverage_factor;
+    msg.inverse_indicator = inverse_indicator;
+
+    return msg;  
+}

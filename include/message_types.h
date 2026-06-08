@@ -76,4 +76,10 @@ struct StockDirectoryMsg{
     char inverse_indicator;
 };
 
-
+struct Order{
+    uint64_t order_ref_num;
+    char side;
+    uint32_t shares;
+    uint32_t price;
+    char stock[8];
+};

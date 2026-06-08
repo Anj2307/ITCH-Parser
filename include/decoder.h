@@ -15,4 +15,9 @@ class Decoder{
         OrderDeleteMsg decode_order_delete(const std:: vector<uint8_t>&buf);
 
         OrderReplaceMsg decode_order_replace(const std:: vector<uint8_t>&buf);
+
+        SystemEventMsg decode_system_event(const std:: vector<uint8_t>&buf);
+
+        StockDirectoryMsg decode_stock_directory(const std:: vector<uint8_t>&buf);
+
 };
