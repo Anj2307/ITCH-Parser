@@ -217,6 +217,51 @@ void OrderBook::print_book(int levels) const {
     }
 }
 
+void OrderBook:: execute_with_price_order(const OrderExecutedWithPriceMsg& msg){
+    
+    if (orders_.find(msg.order_reference_number) == orders_.end()) return;
+    Order order;
+    order=orders_[msg.order_reference_number];
+    char side=order.side;
+
+    if(side=='B'){
+        if(msg.shares==order.shares)
+        {
+            bids_[order.price].total_shares-=order.shares;
+            bids_[order.price].num_orders--;
+            orders_.erase(msg.order_reference_number);
+            if(bids_[order.price].num_orders==0){
+            bids_.erase(order.price);
+            }
+        }
+        else{
+            bids_[order.price].total_shares-=msg.shares;
+            orders_[msg.order_reference_number].shares -= msg.shares;   
+        }
+        
+    }
+
+    if(side=='S'){
+        if(msg.shares==order.shares)
+        {
+            asks_[order.price].total_shares-=order.shares;
+            asks_[order.price].num_orders--;
+            orders_.erase(msg.order_reference_number);
+            if(asks_[order.price].num_orders==0){
+            asks_.erase(order.price);
+        }
+    }
+        else{
+            asks_[order.price].total_shares-=msg.shares;
+            orders_[msg.order_reference_number].shares -= msg.shares;
+
+        }
+        
+    }
+
+}
+
+
 void OrderBook::clear() {
     orders_.clear();
     bids_.clear();

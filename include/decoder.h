@@ -20,4 +20,6 @@ class Decoder{
 
         StockDirectoryMsg decode_stock_directory(const std:: vector<uint8_t>&buf);
 
+        OrderExecutedWithPriceMsg decode_order_executed_with_price(const std:: vector<uint8_t>&buf);
+
 };

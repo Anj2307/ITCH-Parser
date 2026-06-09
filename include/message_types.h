@@ -76,6 +76,54 @@ struct StockDirectoryMsg{
     char inverse_indicator;
 };
 
+struct StockTradingAction{
+    uint16_t stock_locate;
+    uint16_t tracking_number;
+    uint64_t timestamp;
+    char stock[8];
+    char trading_state;
+    char reserved;
+    char reason[4];
+};
+
+struct RegShoRestriction{
+    uint16_t locate_code;
+    uint16_t tracking_number;
+    uint64_t timestamp;
+    char stock[8];
+    char reg_SHO_action;
+};
+
+struct MarketParticipantPosition{
+    uint16_t stock_locate;
+    uint16_t tracking_number;
+    uint64_t timestamp;
+    char stock[8];
+    char primary_market_marker;
+    char market_maker_mode;
+    char market_participant_state;
+    char reserved;
+    char MPID[4];
+};
+
+struct MwcbDeclineLevelMsg{
+    uint16_t stock_locate;
+    uint16_t tracking_number;
+    uint64_t timestamp;
+
+};
+
+struct OrderExecutedWithPriceMsg{
+    uint16_t stock_locate;
+    uint16_t tracking_number;
+    uint64_t timestamp;
+    uint64_t order_reference_number;
+    uint32_t shares;
+    uint64_t match_number;
+    char printable;
+    uint32_t price;
+};
+
 struct Order{
     uint64_t order_ref_num;
     char side;

@@ -16,7 +16,7 @@ class OrderBook {
         void cancel_order(const OrderCancelMsg& msg);
         void delete_order(const OrderDeleteMsg& msg);
         void replace_order(const OrderReplaceMsg& msg);
-
+        void execute_with_price_order(const OrderExecutedWithPriceMsg& msg);
         uint32_t best_bid() const;
         uint32_t best_ask() const;
         void print_book(int levels) const;

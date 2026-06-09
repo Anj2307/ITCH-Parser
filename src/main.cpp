@@ -65,6 +65,11 @@ int main() {
                 book.replace_order(msg);
                 break;
             }
+            case 'C': {
+                OrderExecutedWithPriceMsg msg=decoder.decode_order_executed_with_price(buf);
+                book.execute_with_price_order(msg);
+                break;
+            }
             default:{
                 if (buf.size() >= 19) {
                     uint64_t ref = 0;
