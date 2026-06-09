@@ -19,9 +19,18 @@ class OrderBook {
 
         uint32_t best_bid() const;
         uint32_t best_ask() const;
+        void print_book(int levels) const;
+        OrderBook();
+        void set_symbol(const char* symbol);
+        void clear();
     
     private:
+        char symbol_[8];
+        bool symbol_set_;
         std:: unordered_map<uint64_t,Order> orders_;
         std:: map<uint32_t, PriceLevel, std:: greater<uint32_t>> bids_;
         std:: map<uint32_t, PriceLevel> asks_;
+        
 };
+
+

@@ -1,8 +1,20 @@
 #include "order_book.h"
 #include <cstring>
+#include<iostream>
 #include <winsock2.h>
 
+
+OrderBook :: OrderBook() : symbol_set_(false){
+    memset(symbol_,' ',8);
+}
+
+void OrderBook:: set_symbol(const char * symbol){
+    memcpy(symbol_, symbol,8);
+    symbol_set_=true;
+}
+
 void OrderBook :: add_order(const AddOrderMsg& msg) {
+    if (symbol_set_ && memcmp(msg.stock, symbol_, 8) != 0) return;
     Order order;
     order.order_ref_num = msg.order_reference_number;
     order.side = msg.side;
@@ -23,6 +35,7 @@ void OrderBook :: add_order(const AddOrderMsg& msg) {
 }
 
 void OrderBook :: delete_order(const OrderDeleteMsg& msg){
+    if (orders_.find(msg.order_reference_number) == orders_.end()) return;
 
     Order order;
     order=orders_[msg.order_reference_number];
@@ -49,6 +62,7 @@ void OrderBook :: delete_order(const OrderDeleteMsg& msg){
 
 void OrderBook:: execute_order(const OrderExecutedMsg& msg){
     
+    if (orders_.find(msg.order_reference_number) == orders_.end()) return;
     Order order;
     order=orders_[msg.order_reference_number];
     char side=order.side;
@@ -91,6 +105,7 @@ void OrderBook:: execute_order(const OrderExecutedMsg& msg){
 }
 
 void OrderBook :: cancel_order(const OrderCancelMsg& msg){
+    if (orders_.find(msg.order_reference_number) == orders_.end()) return;
     Order order;
     order=orders_[msg.order_reference_number];
     char side=order.side;
@@ -133,6 +148,7 @@ void OrderBook :: cancel_order(const OrderCancelMsg& msg){
 }
 
 void OrderBook:: replace_order(const OrderReplaceMsg& msg){
+    if (orders_.find(msg.original_order_reference_number) == orders_.end()) return;
     Order order;
         order=orders_[msg.original_order_reference_number];
         orders_.erase(msg.original_order_reference_number);
@@ -174,4 +190,35 @@ void OrderBook:: replace_order(const OrderReplaceMsg& msg){
 
 }
 
+uint32_t OrderBook :: best_bid() const{
+    if(bids_.empty()) return 0;
+    return bids_.begin()->first;
+}
 
+uint32_t OrderBook :: best_ask() const{
+    if(asks_.empty()) return 0;
+    return asks_.begin()->first;
+}
+
+void OrderBook::print_book(int levels) const {
+    std::cout << "--- ASK side (top " << levels << ") ---" << std::endl;
+    int count = 0;
+    for (auto it = asks_.begin(); it != asks_.end() && count < levels; ++it, ++count) {
+        std::cout << "  Price: " << it->first / 10000.0 
+                  << " Shares: " << it->second.total_shares
+                  << " Orders: " << it->second.num_orders << std::endl;
+    }
+    std::cout << "--- BID side (top " << levels << ") ---" << std::endl;
+    count = 0;
+    for (auto it = bids_.begin(); it != bids_.end() && count < levels; ++it, ++count) {
+        std::cout << "  Price: " << it->first / 10000.0
+                  << " Shares: " << it->second.total_shares
+                  << " Orders: " << it->second.num_orders << std::endl;
+    }
+}
+
+void OrderBook::clear() {
+    orders_.clear();
+    bids_.clear();
+    asks_.clear();
+}

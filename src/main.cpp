@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include "file_reader.h"
 #include "decoder.h"
+#include "order_book.h"
 
 int main() {
     FileReader reader("data/01302019.NASDAQ_ITCH50");
@@ -12,51 +14,83 @@ int main() {
     }
 
     Decoder decoder;
+    OrderBook book;
+    book.set_symbol("AAPL    ");
     std::vector<uint8_t> buf;
+    int msg_count = 0;
 
-    int add_orders    = 0;
-    int executed      = 0;
-    int cancelled     = 0;
-    int deleted       = 0;
-    int replaced      = 0;
-    int other         = 0;
-    int order= 0;
-    int debug_count=0;
     while (reader.next_message(buf)) {
-
         char type = decoder.get_message_type(buf);
 
-        if (debug_count < 10) {
-        std::cout << "buf[0] = " << (int)buf[0] 
-                  << " type = " << type 
-                  << " buf size = " << buf.size() << std::endl;
-        debug_count++;
-    }
         switch(type) {
-            case 'A': decoder.decode_add_order(buf);      add_orders++; break;
-            case 'F': decoder.decode_add_order(buf);      add_orders++; break;
-            case 'E': decoder.decode_order_executed(buf); executed++;   break;
-            case 'X': decoder.decode_order_cancel(buf);   cancelled++;  break;
-            case 'D': decoder.decode_order_delete(buf);   deleted++;    break;
-            case 'U': decoder.decode_order_replace(buf);  replaced++;   break;
-            default:  other++; break;
+            case 'S': {
+                SystemEventMsg msg = decoder.decode_system_event(buf);
+                if (msg.event_code == 'C') {
+                    book.clear();
+                    std::cout << "Market closed" << std::endl;
+                }
+                break;
+            }
+            case 'R': {
+                decoder.decode_stock_directory(buf);
+                break;
+            }
+            case 'A': {
+                AddOrderMsg msg = decoder.decode_add_order(buf);
+                book.add_order(msg);
+                break;
+            }
+            case 'F': {
+                AddOrderMsg msg = decoder.decode_add_order(buf);
+                book.add_order(msg);
+                break;
+            }
+            case 'E': {
+                OrderExecutedMsg msg = decoder.decode_order_executed(buf);
+                book.execute_order(msg);
+                break;
+            }
+            case 'X': {
+                OrderCancelMsg msg = decoder.decode_order_cancel(buf);
+                book.cancel_order(msg);
+                break;
+            }
+            case 'D': {
+                OrderDeleteMsg msg = decoder.decode_order_delete(buf);
+                book.delete_order(msg);
+                break;
+            }
+            case 'U': {
+                OrderReplaceMsg msg = decoder.decode_order_replace(buf);
+                book.replace_order(msg);
+                break;
+            }
+            default:{
+                if (buf.size() >= 19) {
+                    uint64_t ref = 0;
+                    memcpy(&ref, buf.data() + 11, 8);
+                    ref = ntohll(ref);
+                    if (ref == 10064545ULL) {
+                        std::cout << "UNHANDLED type='" << type 
+                                << "' mentions stale ref" << std::endl;
+                    }
+                }
+                break;
+            }
         }
-        // order++;
-        // std::cout<<"order no. "<<order<<std::endl;
-        //  std::cout << "Add Orders:  " << add_orders << std::endl;
-        // std::cout << "Executed:    " << executed   << std::endl;
-        // std::cout << "Cancelled:   " << cancelled  << std::endl;
-        // std::cout << "Deleted:     " << deleted    << std::endl;
-        // std::cout << "Replaced:    " << replaced   << std::endl;
-        // std::cout << "Other:       " << other      << std::endl;
+
+        msg_count++;
+        if (msg_count % 10000000 == 0) {
+            std::cout << "Messages: " << msg_count
+                      << " Best Bid: " << book.best_bid() / 10000.0
+                      << " Best Ask: " << book.best_ask() / 10000.0
+                      << std::endl;
+        }
     }
 
-    std::cout << "Add Orders:  " << add_orders << std::endl;
-    std::cout << "Executed:    " << executed   << std::endl;
-    std::cout << "Cancelled:   " << cancelled  << std::endl;
-    std::cout << "Deleted:     " << deleted    << std::endl;
-    std::cout << "Replaced:    " << replaced   << std::endl;
-    std::cout << "Other:       " << other      << std::endl;
+    std::cout << "Total messages: " << msg_count << std::endl;
+    std::cout << "Final Best Bid: " << book.best_bid() / 10000.0 << std::endl;
+    std::cout << "Final Best Ask: " << book.best_ask() / 10000.0 << std::endl;
 
     return 0;
 }
