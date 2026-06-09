@@ -27,6 +27,7 @@ int main() {
                 SystemEventMsg msg = decoder.decode_system_event(buf);
                 if(msg.event_code=='O'){
                     book.volume_clear();
+                    std:: cout << "Market Open" << std:: endl;
                 }
                 if (msg.event_code == 'C') {
                     book.clear();
