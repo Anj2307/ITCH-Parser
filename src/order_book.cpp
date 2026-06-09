@@ -66,7 +66,7 @@ void OrderBook:: execute_order(const OrderExecutedMsg& msg){
     Order order;
     order=orders_[msg.order_reference_number];
     char side=order.side;
-
+    volume_+=msg.shares;
     if(side=='B'){
         if(msg.shares==order.shares)
         {
@@ -200,6 +200,10 @@ uint32_t OrderBook :: best_ask() const{
     return asks_.begin()->first;
 }
 
+int OrderBook :: volume() const{
+    return volume_;
+}
+
 void OrderBook::print_book(int levels) const {
     std::cout << "--- ASK side (top " << levels << ") ---" << std::endl;
     int count = 0;
@@ -223,6 +227,8 @@ void OrderBook:: execute_with_price_order(const OrderExecutedWithPriceMsg& msg){
     Order order;
     order=orders_[msg.order_reference_number];
     char side=order.side;
+
+    volume_+=msg.shares;
 
     if(side=='B'){
         if(msg.shares==order.shares)
@@ -266,4 +272,8 @@ void OrderBook::clear() {
     orders_.clear();
     bids_.clear();
     asks_.clear();
+}
+
+void OrderBook:: volume_clear(){
+    volume_=0;
 }

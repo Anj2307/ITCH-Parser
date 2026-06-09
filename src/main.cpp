@@ -25,6 +25,9 @@ int main() {
         switch(type) {
             case 'S': {
                 SystemEventMsg msg = decoder.decode_system_event(buf);
+                if(msg.event_code=='O'){
+                    book.volume_clear();
+                }
                 if (msg.event_code == 'C') {
                     book.clear();
                     std::cout << "Market closed" << std::endl;
@@ -89,6 +92,7 @@ int main() {
             std::cout << "Messages: " << msg_count
                       << " Best Bid: " << book.best_bid() / 10000.0
                       << " Best Ask: " << book.best_ask() / 10000.0
+                      << " volume: " << book.volume()
                       << std::endl;
         }
     }
