@@ -78,29 +78,22 @@ int main() {
                 book.execute_with_price_order(msg);
                 break;
             }
-            default:{
-                if (length >= 19) {
-                    uint64_t ref = 0;
-                    memcpy(&ref, buf + 11, 8);
-                    ref = ntohll(ref);
-                    if (ref == 10064545ULL) {
-                        std::cout << "UNHANDLED type='" << type 
-                                << "' mentions stale ref" << std::endl;
-                    }
-                }
-                break;
-            }
         }
+        
 
         msg_count++;
-        // if (msg_count % 10000000 == 0) {
-        //     std::cout << "Messages: " << msg_count
-        //               << " Best Bid: " << book.best_bid() / 10000.0
-        //               << " Best Ask: " << book.best_ask() / 10000.0
-        //               << " volume: " << book.volume()
-        //               << std::endl;
-        // }
+        if (msg_count % 10000000 == 0) {
+            std::cout << "Messages: " << msg_count
+                      << " Best Bid: " << book.best_bid() / 10000.0
+                      << " Best Ask: " << book.best_ask() / 10000.0
+                      << " volume: " << book.volume()
+                      << "spread" << book.spread()
+                      << "mid_price" << book.mid_price()
+                      <<"book_imbalance" << book.book_imbalance()
+                      << std::endl;
+        }
     }
+    
 
     auto end = std:: chrono:: high_resolution_clock:: now();
 
