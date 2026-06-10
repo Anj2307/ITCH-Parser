@@ -231,7 +231,7 @@ void OrderBook:: execute_with_price_order(const OrderExecutedWithPriceMsg& msg){
     Order order;
     order=orders_[msg.order_reference_number];
     if (symbol_set_ && memcmp(order.stock, symbol_, 8) != 0) return;
-    char side=order.side;
+    char side=order.side;   
 
     volume_+=msg.shares;
 

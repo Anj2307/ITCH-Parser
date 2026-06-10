@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <chrono>
 #include "file_reader.h"
 #include "decoder.h"
 #include "order_book.h"
@@ -18,7 +19,7 @@ int main() {
     book.set_symbol("AAPL    ");
     std::vector<uint8_t> buf;
     int msg_count = 0;
-
+    auto start =std:: chrono:: high_resolution_clock::now();
     while (reader.next_message(buf)) {
         char type = decoder.get_message_type(buf);
 
@@ -27,11 +28,11 @@ int main() {
                 SystemEventMsg msg = decoder.decode_system_event(buf);
                 if(msg.event_code=='O'){
                     book.volume_clear();
-                    std:: cout << "Market Open" << std:: endl;
+                    //std:: cout << "Market Open" << std:: endl;
                 }
                 if (msg.event_code == 'C') {
                     book.clear();
-                    std::cout << "Market closed" << std::endl;
+                    //std::cout << "Market closed" << std::endl;
                 }
                 break;
             }
@@ -98,9 +99,13 @@ int main() {
         // }
     }
 
+    auto end = std:: chrono:: high_resolution_clock:: now();
+
     // std::cout << "Total messages: " << msg_count << std::endl;
     // std::cout << "Final Best Bid: " << book.best_bid() / 10000.0 << std::endl;
     // std::cout << "Final Best Ask: " << book.best_ask() / 10000.0 << std::endl;
+    auto duration=std:: chrono:: duration_cast<std:: chrono::nanoseconds>(end-start);
+    std:: cout<< duration.count() << " ns"<<std:: endl;
     std::cout << " VWAP: " << book.vwap();
     return 0;
 }
