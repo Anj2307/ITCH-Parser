@@ -299,3 +299,34 @@ double OrderBook::vwap() const {
 void OrderBook:: volume_clear(){
     volume_=0;
 }
+
+uint64_t OrderBook:: bid_volume() const{
+    uint64_t total=0;
+    for(auto& pair: bids_){
+        total+=pair.second.total_shares;
+    }
+    return total;
+}
+
+uint64_t OrderBook:: ask_volume() const{
+    uint64_t total=0;
+    for(auto& pair: asks_){
+        total+=pair.second.total_shares;
+    }
+    return total;
+}
+
+double OrderBook:: spread() const{
+    return (best_ask()-best_bid())/10000.0;
+}
+
+double OrderBook:: mid_price() const{
+    return (best_ask()+best_bid())/20000.0;
+}
+
+double OrderBook::book_imbalance() const {
+    uint64_t bid_vol = bid_volume();
+    uint64_t ask_vol = ask_volume();
+    if (bid_vol + ask_vol == 0) return 0;
+    return (double)(bid_vol - ask_vol) / (double)(bid_vol + ask_vol);
+}

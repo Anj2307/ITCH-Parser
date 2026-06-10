@@ -27,6 +27,12 @@ class OrderBook {
         void clear();
         void volume_clear();
         double vwap() const;
+
+        uint64_t bid_volume() const;
+        uint64_t ask_volume() const;
+        double spread() const;
+        double mid_price() const;
+        double book_imbalance() const;
     
     private:
         char symbol_[8];
