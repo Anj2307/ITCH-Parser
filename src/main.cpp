@@ -89,18 +89,18 @@ int main() {
         }
 
         msg_count++;
-        if (msg_count % 10000000 == 0) {
-            std::cout << "Messages: " << msg_count
-                      << " Best Bid: " << book.best_bid() / 10000.0
-                      << " Best Ask: " << book.best_ask() / 10000.0
-                      << " volume: " << book.volume()
-                      << std::endl;
-        }
+        // if (msg_count % 10000000 == 0) {
+        //     std::cout << "Messages: " << msg_count
+        //               << " Best Bid: " << book.best_bid() / 10000.0
+        //               << " Best Ask: " << book.best_ask() / 10000.0
+        //               << " volume: " << book.volume()
+        //               << std::endl;
+        // }
     }
 
-    std::cout << "Total messages: " << msg_count << std::endl;
-    std::cout << "Final Best Bid: " << book.best_bid() / 10000.0 << std::endl;
-    std::cout << "Final Best Ask: " << book.best_ask() / 10000.0 << std::endl;
-
+    // std::cout << "Total messages: " << msg_count << std::endl;
+    // std::cout << "Final Best Bid: " << book.best_bid() / 10000.0 << std::endl;
+    // std::cout << "Final Best Ask: " << book.best_ask() / 10000.0 << std::endl;
+    std::cout << " VWAP: " << book.vwap();
     return 0;
 }

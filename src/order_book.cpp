@@ -4,7 +4,7 @@
 #include <winsock2.h>
 
 
-OrderBook :: OrderBook() : symbol_set_(false){
+OrderBook :: OrderBook() : symbol_set_(false),volume_(0),vwap_numerator_(0),vwap_denominator_(0){
     memset(symbol_,' ',8);
 }
 
@@ -64,9 +64,13 @@ void OrderBook:: execute_order(const OrderExecutedMsg& msg){
     
     if (orders_.find(msg.order_reference_number) == orders_.end()) return;
     Order order;
+   
     order=orders_[msg.order_reference_number];
+    if (symbol_set_ && memcmp(order.stock, symbol_, 8) != 0) return;
     char side=order.side;
     volume_+=msg.shares;
+    vwap_numerator_ += (uint64_t)order.price * (uint64_t)msg.shares;
+    vwap_denominator_ += msg.shares;
     if(side=='B'){
         if(msg.shares==order.shares)
         {
@@ -226,9 +230,13 @@ void OrderBook:: execute_with_price_order(const OrderExecutedWithPriceMsg& msg){
     if (orders_.find(msg.order_reference_number) == orders_.end()) return;
     Order order;
     order=orders_[msg.order_reference_number];
+    if (symbol_set_ && memcmp(order.stock, symbol_, 8) != 0) return;
     char side=order.side;
 
     volume_+=msg.shares;
+
+    vwap_numerator_+=(uint64_t) msg.price*(uint64_t)msg.shares;
+    vwap_denominator_+=msg.shares;
 
     if(side=='B'){
         if(msg.shares==order.shares)
@@ -272,6 +280,20 @@ void OrderBook::clear() {
     orders_.clear();
     bids_.clear();
     asks_.clear();
+}
+
+void OrderBook:: bid_ask_spread(int num) const{
+    for (auto bid=bids_.begin(),ask=asks_.begin();bid!=bids_.begin()&&ask!=asks_.begin()&&num;num--,++bid,++ask){
+        std:: cout<< "No. of shares";
+    }
+}
+
+
+double OrderBook::vwap() const {
+    if (vwap_denominator_ == 0) return 0;
+    std::cout << "numerator: " << vwap_numerator_ 
+              << " denominator: " << vwap_denominator_ << std::endl;
+    return (double)vwap_numerator_ / vwap_denominator_ / 10000.0;
 }
 
 void OrderBook:: volume_clear(){
