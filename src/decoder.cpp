@@ -17,9 +17,14 @@ AddOrderMsg Decoder:: decode_add_order(const uint8_t* buf){
     memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
     
     uint64_t order_reference_number;
     memcpy(&order_reference_number, buf + 11, 8);
@@ -60,9 +65,14 @@ OrderExecutedMsg Decoder:: decode_order_executed(const uint8_t* buf){
     memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
     
     uint64_t order_reference_number;
     memcpy(&order_reference_number, buf + 11, 8);
@@ -96,9 +106,14 @@ OrderCancelMsg Decoder:: decode_order_cancel(const uint8_t* buf){
     memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
     
     uint64_t order_reference_number;
     memcpy(&order_reference_number, buf + 11, 8);
@@ -129,9 +144,14 @@ OrderDeleteMsg Decoder:: decode_order_delete(const uint8_t* buf){
     memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
     
     uint64_t order_reference_number;
     memcpy(&order_reference_number, buf + 11, 8);
@@ -159,9 +179,14 @@ OrderReplaceMsg Decoder:: decode_order_replace(const uint8_t* buf){
     memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
     
     uint64_t original_order_reference_number;
     memcpy(&original_order_reference_number, buf + 11, 8);
@@ -197,9 +222,14 @@ SystemEventMsg Decoder:: decode_system_event(const uint8_t* buf){
     memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
 
     uint16_t tracking_number;
     memcpy(&tracking_number, buf + 3, 2);
@@ -303,9 +333,14 @@ OrderExecutedWithPriceMsg Decoder:: decode_order_executed_with_price(const uint8
     memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
-    uint64_t timestamp;
-    memcpy(&timestamp, buf + 5, 6);
-    timestamp = ntohll(timestamp);
+    uint8_t tmp[6];
+memcpy(tmp, buf + 5, 6);
+uint64_t timestamp = ((uint64_t)tmp[0] << 40) |
+                     ((uint64_t)tmp[1] << 32) |
+                     ((uint64_t)tmp[2] << 24) |
+                     ((uint64_t)tmp[3] << 16) |
+                     ((uint64_t)tmp[4] << 8)  |
+                     ((uint64_t)tmp[5]);
     
     uint64_t order_reference_number;
     memcpy(&order_reference_number, buf + 11, 8);

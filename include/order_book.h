@@ -33,6 +33,7 @@ class OrderBook {
         double spread() const;
         double mid_price() const;
         double book_imbalance() const;
+        uint64_t last_timestamp() const;
     
     private:
         char symbol_[8];
@@ -43,6 +44,7 @@ class OrderBook {
         int volume_;
         uint64_t vwap_numerator_;
         uint64_t vwap_denominator_;
+        uint64_t last_timestamp_;
 };
 
 

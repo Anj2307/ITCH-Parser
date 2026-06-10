@@ -23,6 +23,10 @@ int main() {
     
     int msg_count = 0;
     auto start =std:: chrono:: high_resolution_clock::now();
+    FILE* csv = fopen("data/aapl_analysis.csv", "w");
+    fprintf(csv, "timestamp_sec,best_bid,best_ask,spread,mid_price,vwap,volume,book_imbalance\n");
+    uint64_t last_csv_time = 0;
+    uint64_t current_timestamp = 0;
     while (reader.next_message(buf,length)) {
         char type = decoder.get_message_type(buf);
 
@@ -80,19 +84,41 @@ int main() {
             }
         }
         
+        current_timestamp = book.last_timestamp();
+        if(book.best_bid() > 0 && book.best_ask() > 0){
+        if (current_timestamp > 0 && current_timestamp - last_csv_time >= 1000000000ULL) {
+            uint64_t seconds = current_timestamp / 1000000000ULL;
+            uint64_t hours   = seconds / 3600;
+            uint64_t minutes = (seconds % 3600) / 60;
+            uint64_t secs    = seconds % 60;
 
+            fprintf(csv, "%02llu:%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%.4f,%u,%.4f\n",
+                hours, minutes, secs,
+                book.best_bid() / 10000.0,
+                book.best_ask() / 10000.0,
+                book.spread(),
+                book.mid_price(),
+                book.vwap(),
+                book.volume(),
+                book.book_imbalance()
+            );
+            last_csv_time = current_timestamp;
+        }
+    }
         msg_count++;
         if (msg_count % 10000000 == 0) {
             std::cout << "Messages: " << msg_count
                       << " Best Bid: " << book.best_bid() / 10000.0
                       << " Best Ask: " << book.best_ask() / 10000.0
                       << " volume: " << book.volume()
-                      << "spread" << book.spread()
-                      << "mid_price" << book.mid_price()
-                      <<"book_imbalance" << book.book_imbalance()
+                      << " spread: " << book.spread()
+                      << " mid_price: " << book.mid_price()
+                      <<" book_imbalance: " << book.book_imbalance()
                       << std::endl;
+            std::cout << " raw timestamp: " << book.last_timestamp() << std::endl;
         }
     }
+    fclose(csv);
     
 
     auto end = std:: chrono:: high_resolution_clock:: now();

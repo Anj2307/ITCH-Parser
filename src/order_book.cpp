@@ -4,7 +4,7 @@
 #include <winsock2.h>
 
 
-OrderBook :: OrderBook() : symbol_set_(false),volume_(0),vwap_numerator_(0),vwap_denominator_(0){
+OrderBook :: OrderBook() : symbol_set_(false),volume_(0),vwap_numerator_(0),vwap_denominator_(0),last_timestamp_(0){
     memset(symbol_,' ',8);
 }
 
@@ -15,6 +15,7 @@ void OrderBook:: set_symbol(const char * symbol){
 
 void OrderBook :: add_order(const AddOrderMsg& msg) {
     if (symbol_set_ && memcmp(msg.stock, symbol_, 8) != 0) return;
+    last_timestamp_ = msg.timestamp;
     Order order;
     order.order_ref_num = msg.order_reference_number;
     order.side = msg.side;
@@ -36,7 +37,7 @@ void OrderBook :: add_order(const AddOrderMsg& msg) {
 
 void OrderBook :: delete_order(const OrderDeleteMsg& msg){
     if (orders_.find(msg.order_reference_number) == orders_.end()) return;
-
+    last_timestamp_ = msg.timestamp;
     Order order;
     order=orders_[msg.order_reference_number];
     orders_.erase(msg.order_reference_number);
@@ -64,6 +65,7 @@ void OrderBook:: execute_order(const OrderExecutedMsg& msg){
     
     if (orders_.find(msg.order_reference_number) == orders_.end()) return;
     Order order;
+    last_timestamp_ = msg.timestamp;
    
     order=orders_[msg.order_reference_number];
     if (symbol_set_ && memcmp(order.stock, symbol_, 8) != 0) return;
@@ -111,6 +113,7 @@ void OrderBook:: execute_order(const OrderExecutedMsg& msg){
 void OrderBook :: cancel_order(const OrderCancelMsg& msg){
     if (orders_.find(msg.order_reference_number) == orders_.end()) return;
     Order order;
+    last_timestamp_ = msg.timestamp;
     order=orders_[msg.order_reference_number];
     char side=order.side;
 
@@ -154,6 +157,7 @@ void OrderBook :: cancel_order(const OrderCancelMsg& msg){
 void OrderBook:: replace_order(const OrderReplaceMsg& msg){
     if (orders_.find(msg.original_order_reference_number) == orders_.end()) return;
     Order order;
+    last_timestamp_ = msg.timestamp;
         order=orders_[msg.original_order_reference_number];
         orders_.erase(msg.original_order_reference_number);
         char side=order.side;
@@ -232,7 +236,7 @@ void OrderBook:: execute_with_price_order(const OrderExecutedWithPriceMsg& msg){
     order=orders_[msg.order_reference_number];
     if (symbol_set_ && memcmp(order.stock, symbol_, 8) != 0) return;
     char side=order.side;   
-
+    last_timestamp_ = msg.timestamp;
     volume_+=msg.shares;
 
     vwap_numerator_+=(uint64_t) msg.price*(uint64_t)msg.shares;
@@ -291,8 +295,6 @@ void OrderBook:: bid_ask_spread(int num) const{
 
 double OrderBook::vwap() const {
     if (vwap_denominator_ == 0) return 0;
-    std::cout << "numerator: " << vwap_numerator_ 
-              << " denominator: " << vwap_denominator_ << std::endl;
     return (double)vwap_numerator_ / vwap_denominator_ / 10000.0;
 }
 
@@ -329,4 +331,9 @@ double OrderBook::book_imbalance() const {
     uint64_t ask_vol = ask_volume();
     if (bid_vol + ask_vol == 0) return 0;
    return ((double)bid_vol - (double)ask_vol) / ((double)bid_vol + (double)ask_vol);
+}
+
+
+uint64_t OrderBook::last_timestamp() const {
+    return last_timestamp_;
 }
