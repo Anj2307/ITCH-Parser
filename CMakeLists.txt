@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(nasdaq_itchparsing)
 
 set(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 include_directories(include)
 

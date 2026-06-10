@@ -4,38 +4,38 @@
 #include <winsock2.h>
 #include "message_types.h"
 
-char Decoder:: get_message_type(const std:: vector<uint8_t> & buf){
+char Decoder:: get_message_type(const uint8_t*buf){
     return static_cast<char>(buf[0]);
 }
 
-AddOrderMsg Decoder:: decode_add_order(const std:: vector<uint8_t>&buf){
+AddOrderMsg Decoder:: decode_add_order(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     uint64_t order_reference_number;
-    memcpy(&order_reference_number, buf.data() + 11, 8);
+    memcpy(&order_reference_number, buf + 11, 8);
     order_reference_number = ntohll(order_reference_number);
 
     char side=static_cast<char>(buf[19]);
 
     uint32_t shares;
-    memcpy(&shares, buf.data()+20,4);
+    memcpy(&shares, buf+20,4);
     shares= ntohl(shares);
 
     char stock[8];
-    memcpy(stock, buf.data() + 24, 8);
+    memcpy(stock, buf + 24, 8);
 
     uint32_t price;
-    memcpy(&price,buf.data()+32,4);
+    memcpy(&price,buf+32,4);
     price=ntohl(price);
     
     AddOrderMsg msg;
@@ -51,30 +51,30 @@ AddOrderMsg Decoder:: decode_add_order(const std:: vector<uint8_t>&buf){
 }
 
 
-OrderExecutedMsg Decoder:: decode_order_executed(const std:: vector<uint8_t>&buf){
+OrderExecutedMsg Decoder:: decode_order_executed(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     uint64_t order_reference_number;
-    memcpy(&order_reference_number, buf.data() + 11, 8);
+    memcpy(&order_reference_number, buf + 11, 8);
     order_reference_number = ntohll(order_reference_number);
 
 
     uint32_t shares;
-    memcpy(&shares, buf.data()+19,4);
+    memcpy(&shares, buf+19,4);
     shares= ntohl(shares);
 
     uint64_t match_number;
-    memcpy(&match_number,buf.data()+23,8);
+    memcpy(&match_number,buf+23,8);
     match_number=ntohll(match_number);
     
     OrderExecutedMsg msg;
@@ -87,26 +87,26 @@ OrderExecutedMsg Decoder:: decode_order_executed(const std:: vector<uint8_t>&buf
     return msg;
 }
 
-OrderCancelMsg Decoder:: decode_order_cancel(const std:: vector<uint8_t>&buf){
+OrderCancelMsg Decoder:: decode_order_cancel(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     uint64_t order_reference_number;
-    memcpy(&order_reference_number, buf.data() + 11, 8);
+    memcpy(&order_reference_number, buf + 11, 8);
     order_reference_number = ntohll(order_reference_number);
 
 
     uint32_t shares;
-    memcpy(&shares, buf.data()+19,4);
+    memcpy(&shares, buf+19,4);
     shares= ntohl(shares);
 
 
@@ -120,21 +120,21 @@ OrderCancelMsg Decoder:: decode_order_cancel(const std:: vector<uint8_t>&buf){
     return msg;  
 }
 
-OrderDeleteMsg Decoder:: decode_order_delete(const std:: vector<uint8_t>&buf){
+OrderDeleteMsg Decoder:: decode_order_delete(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     uint64_t order_reference_number;
-    memcpy(&order_reference_number, buf.data() + 11, 8);
+    memcpy(&order_reference_number, buf + 11, 8);
     order_reference_number = ntohll(order_reference_number);
 
 
@@ -150,35 +150,35 @@ OrderDeleteMsg Decoder:: decode_order_delete(const std:: vector<uint8_t>&buf){
 }
 
 
-OrderReplaceMsg Decoder:: decode_order_replace(const std:: vector<uint8_t>&buf){
+OrderReplaceMsg Decoder:: decode_order_replace(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     uint64_t original_order_reference_number;
-    memcpy(&original_order_reference_number, buf.data() + 11, 8);
+    memcpy(&original_order_reference_number, buf + 11, 8);
     original_order_reference_number = ntohll(original_order_reference_number);
 
     uint64_t new_order_reference_number;
-    memcpy(&new_order_reference_number, buf.data() + 19, 8);
+    memcpy(&new_order_reference_number, buf + 19, 8);
     new_order_reference_number = ntohll(new_order_reference_number);
 
 
 
     uint32_t shares;
-    memcpy(&shares, buf.data()+27,4);
+    memcpy(&shares, buf+27,4);
     shares= ntohl(shares);
 
     uint32_t price;
-    memcpy(&price,buf.data()+31,4);
+    memcpy(&price,buf+31,4);
     price= ntohl(price);
 
     
@@ -192,17 +192,17 @@ OrderReplaceMsg Decoder:: decode_order_replace(const std:: vector<uint8_t>&buf){
     msg.price=price;
     return msg;
 }
-SystemEventMsg Decoder:: decode_system_event(const std:: vector<uint8_t>&buf){
+SystemEventMsg Decoder:: decode_system_event(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     char event_code=static_cast<char>(buf[11]);
@@ -217,28 +217,28 @@ SystemEventMsg Decoder:: decode_system_event(const std:: vector<uint8_t>&buf){
 
 }
 
-StockDirectoryMsg Decoder:: decode_stock_directory(const std:: vector<uint8_t>&buf){
+StockDirectoryMsg Decoder:: decode_stock_directory(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp = 0;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     char stock[8];
-    memcpy(stock, buf.data() + 11, 8);
+    memcpy(stock, buf + 11, 8);
 
     char market_category = static_cast<char>(buf[19]);
 
     char financial_status_indicator = static_cast<char>(buf[20]);
 
     uint32_t round_lot_size;
-    memcpy(&round_lot_size, buf.data() + 21, 4);
+    memcpy(&round_lot_size, buf + 21, 4);
     round_lot_size = ntohl(round_lot_size);
 
     char round_lots_only = static_cast<char>(buf[25]);
@@ -246,7 +246,7 @@ StockDirectoryMsg Decoder:: decode_stock_directory(const std:: vector<uint8_t>&b
     char issue_classification = static_cast<char>(buf[26]);
 
     char issue_sub_type[2];
-    memcpy(&issue_sub_type, buf.data() + 27, 2);
+    memcpy(&issue_sub_type, buf + 27, 2);
 
     char authenticity = static_cast<char>(buf[29]);
 
@@ -259,7 +259,7 @@ StockDirectoryMsg Decoder:: decode_stock_directory(const std:: vector<uint8_t>&b
     char etp_flag = static_cast<char>(buf[33]);
 
     uint32_t etp_leverage_factor;
-    memcpy(&etp_leverage_factor, buf.data() + 34, 4);
+    memcpy(&etp_leverage_factor, buf + 34, 4);
     etp_leverage_factor = ntohl(etp_leverage_factor);
 
     char inverse_indicator = static_cast<char>(buf[38]);
@@ -294,36 +294,36 @@ StockDirectoryMsg Decoder:: decode_stock_directory(const std:: vector<uint8_t>&b
 }
 
 
-OrderExecutedWithPriceMsg Decoder:: decode_order_executed_with_price(const std:: vector<uint8_t>&buf){
+OrderExecutedWithPriceMsg Decoder:: decode_order_executed_with_price(const uint8_t* buf){
     uint16_t stock_locate;
-    memcpy(&stock_locate, buf.data() + 1, 2);
+    memcpy(&stock_locate, buf + 1, 2);
     stock_locate = ntohs(stock_locate);
 
     uint16_t tracking_number;
-    memcpy(&tracking_number, buf.data() + 3, 2);
+    memcpy(&tracking_number, buf + 3, 2);
     tracking_number = ntohs(tracking_number);
 
     uint64_t timestamp;
-    memcpy(&timestamp, buf.data() + 5, 6);
+    memcpy(&timestamp, buf + 5, 6);
     timestamp = ntohll(timestamp);
     
     uint64_t order_reference_number;
-    memcpy(&order_reference_number, buf.data() + 11, 8);
+    memcpy(&order_reference_number, buf + 11, 8);
     order_reference_number = ntohll(order_reference_number);
 
 
     uint32_t shares;
-    memcpy(&shares, buf.data()+19,4);
+    memcpy(&shares, buf+19,4);
     shares= ntohl(shares);
 
     uint64_t match_number;
-    memcpy(&match_number,buf.data()+23,8);
+    memcpy(&match_number,buf+23,8);
     match_number=ntohll(match_number);
 
     char printable=static_cast<char>(buf[31]);
 
     uint32_t price;
-    memcpy(&price,buf.data()+32,4);
+    memcpy(&price,buf+32,4);
     price=ntohl(price);
     
     OrderExecutedWithPriceMsg msg;

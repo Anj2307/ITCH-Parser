@@ -9,7 +9,7 @@ class FileReader {
     public:
         FileReader(const char* filename);
         ~FileReader();
-        bool next_message(std:: vector<uint8_t>& buf);
+        bool next_message(uint8_t* buf, uint16_t& length);
         bool is_open() const;
 
     private:

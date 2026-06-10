@@ -17,10 +17,13 @@ int main() {
     Decoder decoder;
     OrderBook book;
     book.set_symbol("AAPL    ");
-    std::vector<uint8_t> buf;
+
+    uint8_t buf[64];
+    uint16_t length;
+    
     int msg_count = 0;
     auto start =std:: chrono:: high_resolution_clock::now();
-    while (reader.next_message(buf)) {
+    while (reader.next_message(buf,length)) {
         char type = decoder.get_message_type(buf);
 
         switch(type) {
@@ -76,9 +79,9 @@ int main() {
                 break;
             }
             default:{
-                if (buf.size() >= 19) {
+                if (length >= 19) {
                     uint64_t ref = 0;
-                    memcpy(&ref, buf.data() + 11, 8);
+                    memcpy(&ref, buf + 11, 8);
                     ref = ntohll(ref);
                     if (ref == 10064545ULL) {
                         std::cout << "UNHANDLED type='" << type 
