@@ -123,9 +123,9 @@ int main() {
 
     auto end = std:: chrono:: high_resolution_clock:: now();
 
-    // std::cout << "Total messages: " << msg_count << std::endl;
-    // std::cout << "Final Best Bid: " << book.best_bid() / 10000.0 << std::endl;
-    // std::cout << "Final Best Ask: " << book.best_ask() / 10000.0 << std::endl;
+    std::cout << "Total messages: " << msg_count << std::endl;
+    std::cout << "Final Best Bid: " << book.best_bid() / 10000.0 << std::endl;
+    std::cout << "Final Best Ask: " << book.best_ask() / 10000.0 << std::endl;
     auto duration=std:: chrono:: duration_cast<std:: chrono::nanoseconds>(end-start);
     std:: cout<< duration.count() << " ns"<<std:: endl;
     std::cout << " VWAP: " << book.vwap();
