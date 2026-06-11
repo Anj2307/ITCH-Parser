@@ -25,6 +25,10 @@ int main() {
     auto start =std:: chrono:: high_resolution_clock::now();
     FILE* csv = fopen("data/aapl_analysis.csv", "w");
     fprintf(csv, "timestamp_sec,best_bid,best_ask,spread,mid_price,vwap,volume,book_imbalance\n");
+
+
+    FILE* ohlcv_csv = fopen("data/appl_ohclv.csv","w");
+    fprintf(ohlcv_csv, "time,open,high,low,close,volume\n");
     uint64_t last_csv_time = 0;
     uint64_t current_timestamp = 0;
     while (reader.next_message(buf,length)) {
@@ -105,6 +109,22 @@ int main() {
             last_csv_time = current_timestamp;
         }
     }
+        if (book.bar_complete(book.last_timestamp())) {
+            OHLCVBar bar = book.get_bar();
+            if(bar.initialized){
+            uint64_t seconds = bar.timestamp / 1000000000ULL;
+            fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
+                seconds / 3600, (seconds % 3600) / 60,
+                bar.open / 10000.0,
+                bar.high / 10000.0,
+                bar.low / 10000.0,
+                bar.close / 10000.0,
+                (unsigned long long)bar.volume
+            );
+        }
+            book.reset_bar(book.last_timestamp());
+}
+
         msg_count++;
         if (msg_count % 10000000 == 0) {
             std::cout << "Messages: " << msg_count

@@ -6,6 +6,13 @@
 
 OrderBook :: OrderBook() : symbol_set_(false),volume_(0),vwap_numerator_(0),vwap_denominator_(0),last_timestamp_(0){
     memset(symbol_,' ',8);
+    current_bar_.initialized = false;
+    current_bar_.open = 0;
+    current_bar_.high = 0;
+    current_bar_.low = 0;
+    current_bar_.close = 0;
+    current_bar_.volume = 0;
+    current_bar_.timestamp = 0;
 }
 
 void OrderBook:: set_symbol(const char * symbol){
@@ -73,6 +80,9 @@ void OrderBook:: execute_order(const OrderExecutedMsg& msg){
     volume_+=msg.shares;
     vwap_numerator_ += (uint64_t)order.price * (uint64_t)msg.shares;
     vwap_denominator_ += msg.shares;
+    
+    update_bar(order.price,msg.shares,msg.timestamp);
+
     if(side=='B'){
         if(msg.shares==order.shares)
         {
@@ -242,6 +252,8 @@ void OrderBook:: execute_with_price_order(const OrderExecutedWithPriceMsg& msg){
     vwap_numerator_+=(uint64_t) msg.price*(uint64_t)msg.shares;
     vwap_denominator_+=msg.shares;
 
+    update_bar(msg.price,msg.shares,msg.timestamp);
+
     if(side=='B'){
         if(msg.shares==order.shares)
         {
@@ -330,10 +342,43 @@ double OrderBook::book_imbalance() const {
     uint64_t bid_vol = bid_volume();
     uint64_t ask_vol = ask_volume();
     if (bid_vol + ask_vol == 0) return 0;
-    return (double)(bid_vol - ask_vol) / (double)(bid_vol + ask_vol);
+    return ((double)bid_vol - (double)ask_vol) / ((double)bid_vol + (double)ask_vol);
 }
 
 
 uint64_t OrderBook::last_timestamp() const {
     return last_timestamp_;
 }
+
+void OrderBook :: update_bar(uint32_t price, uint32_t shares, uint64_t timestamp){
+
+    if(!current_bar_.initialized) {
+        current_bar_.timestamp= (timestamp / 60000000000ULL) * 60000000000ULL;
+        current_bar_.open  = price;
+        current_bar_.high  = price;
+        current_bar_.low   = price;
+        current_bar_.close = price;
+        current_bar_.volume = shares;
+        current_bar_.initialized = true;
+    } else {
+        if(price> current_bar_.high) current_bar_.high=price;
+        if(price < current_bar_.low) current_bar_.low = price;
+        current_bar_.close= price;
+        current_bar_.volume += shares;
+    }
+}
+
+bool OrderBook :: bar_complete(uint64_t timestamp) const {
+    if(!current_bar_.initialized) return false;
+    return timestamp >= current_bar_.timestamp + 60000000000ULL;
+}
+
+void OrderBook:: reset_bar(uint64_t timestamp){
+    current_bar_.initialized = false;
+    current_bar_.timestamp= (timestamp / 60000000000ULL) * 60000000000ULL;
+    current_bar_.volume=0;
+}
+
+OHLCVBar OrderBook :: get_bar() const{
+    return current_bar_;
+} 

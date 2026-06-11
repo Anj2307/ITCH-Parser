@@ -34,6 +34,11 @@ class OrderBook {
         double mid_price() const;
         double book_imbalance() const;
         uint64_t last_timestamp() const;
+
+        void update_bar(uint32_t price, uint32_t shares, uint64_t timestamp);
+        void reset_bar(uint64_t timestamp);
+        OHLCVBar get_bar() const;
+        bool bar_complete(uint64_t timestamp) const;
     
     private:
         char symbol_[8];
@@ -45,6 +50,7 @@ class OrderBook {
         uint64_t vwap_numerator_;
         uint64_t vwap_denominator_;
         uint64_t last_timestamp_;
+        OHLCVBar current_bar_;
 };
 
 

@@ -131,3 +131,14 @@ struct Order{
     uint32_t price;
     char stock[8];
 };
+
+struct OHLCVBar{
+
+    uint64_t timestamp;
+    uint32_t open;
+    uint32_t high;
+    uint32_t low;
+    uint32_t close;
+    uint64_t volume;
+    bool initialized;
+};
