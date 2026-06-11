@@ -330,7 +330,7 @@ double OrderBook::book_imbalance() const {
     uint64_t bid_vol = bid_volume();
     uint64_t ask_vol = ask_volume();
     if (bid_vol + ask_vol == 0) return 0;
-   return ((double)bid_vol - (double)ask_vol) / ((double)bid_vol + (double)ask_vol);
+    return (double)(bid_vol - ask_vol) / (double)(bid_vol + ask_vol);
 }
 
 

@@ -64,7 +64,7 @@ def build_dashboard(df: pd.DataFrame, title: str) -> go.Figure:
 
     fig.add_trace(go.Scatter(
         x=x, y=df["best_bid"], name="Best Bid",
-        line=dict(color="#26a69a", width=1),
+        line=dict(color="#9da626", width=1),
         fill="tonexty", fillcolor="rgba(120,120,120,0.12)",  # shaded spread band
         hovertemplate="Bid: %{y:.4f}<extra></extra>",
     ), row=1, col=1)
