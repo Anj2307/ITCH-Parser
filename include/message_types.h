@@ -168,3 +168,12 @@ struct ATR{
     double prev_close;
     int num_bars;
 };
+
+struct BollingerBands{
+    double upper;
+    double middle;
+    double lower;
+    double buffer[20];
+    int head;
+    int num_bar;
+};

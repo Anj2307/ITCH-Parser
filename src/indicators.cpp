@@ -3,7 +3,7 @@
 #include<iostream>
 #include<cmath>
 
-Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(false),atr_ready_(false){
+Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(false),atr_ready_(false),bb_ready_(false){
     curruent_rsi_.value=0;
     curruent_rsi_.avg_loss=0;
     curruent_rsi_.avg_gain=0;
@@ -30,6 +30,13 @@ Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(f
     atr_.value=0;
     atr_.prev_close=0;
     atr_.num_bars=0;
+
+    memset(bb_.buffer, 0, sizeof(bb_.buffer));
+    bb_.head = 0;
+    bb_.num_bar = 0;
+    bb_.upper = 0;
+    bb_.middle = 0;
+    bb_.lower = 0;
 }
 
 
@@ -195,5 +202,35 @@ double Indicators:: get_atr() const{
     return atr_.value;
 }
 
+void Indicators:: bb(double close){
+    bb_.buffer[bb_.head]=close;
+    bb_.head=(bb_.head+1) % 20;
+    bb_.num_bar++;
+    if(bb_.num_bar<20) return;
+    double sum=0;
+    for(double i: bb_.buffer){
+        sum+=i;
+    }
+    bb_.middle=sum/20;
+    double var=0;
+    for (double i: bb_.buffer){
+        var+=(i-bb_.middle)*(i-bb_.middle);
+    }
+    var/=20;
+    double stddev= std:: sqrt(var);
+    bb_.upper=(bb_.middle+(2*stddev));
+    bb_.lower=(bb_.middle-(2*stddev));
+    bb_ready_=true;
+}
+
+void Indicators :: get_bb() const{
+    if(!bb_ready_) return;
+
+    std:: cout <<"upper: "<<bb_.upper
+                <<" middle: "<<bb_.middle
+                <<" lower: "<<bb_.lower
+                << std:: endl;
+    return;
+}
 
 

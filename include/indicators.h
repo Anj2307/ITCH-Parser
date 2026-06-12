@@ -17,13 +17,15 @@ class Indicators {
         void atr(double high, double close, double low);
         double get_atr() const;
         double tr(double high, double close, double low);
-
+        void bb(double close);
+        void get_bb() const;
     
     private:
         bool rsi_ready_;
         bool ema_ready_;
         bool macd_ready_;
         bool atr_ready_;
+        bool bb_ready_;
         RSI curruent_rsi_;
         EMA ema_;
         MACD macd_;
@@ -31,4 +33,5 @@ class Indicators {
         EMA ema_slow_;
         EMA ema_signal_;
         ATR atr_;
+        BollingerBands bb_;
 };
