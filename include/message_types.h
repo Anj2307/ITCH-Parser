@@ -155,3 +155,9 @@ struct EMA{
     double value;
     int num_bar;
 };
+
+struct MACD{
+    double macd_line;
+    double signal_line;
+    double histogram;
+};

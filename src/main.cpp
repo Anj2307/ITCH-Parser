@@ -116,6 +116,7 @@ int main() {
             uint64_t seconds = bar.timestamp / 1000000000ULL;
             ind.rsi(bar.close / 10000.0);
             ind.ema(20,bar.close / 10000.0);
+            ind.macd(bar.close / 10000.0);
             fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
                 seconds / 3600, (seconds % 3600) / 60,
                 bar.open / 10000.0,
@@ -139,8 +140,10 @@ int main() {
                       <<" book_imbalance: " << book.book_imbalance()
                       << " rsi: " << ind.get_rsi()
                       <<" ema: " <<ind.get_ema()
+
                       << std::endl;
             std::cout << " raw timestamp: " << book.last_timestamp() << std::endl;
+            ind.get_macd();
         }
     }
     fclose(csv);
