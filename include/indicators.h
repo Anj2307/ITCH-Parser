@@ -10,12 +10,15 @@ class Indicators {
         double macd() const;
         Indicators();
         double get_rsi() const;
+        double get_ema() const;
+        void ema(int n, double close);
     
     private:
-        double ema_;
         double bollinger_bands_;
         double macd_;
         bool rsi_ready_;
+        bool ema_ready_;
         RSI curruent_rsi_;
+        EMA ema_;
 
 };

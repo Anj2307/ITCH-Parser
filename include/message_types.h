@@ -150,3 +150,8 @@ struct RSI{
     int num_bar;
     double prev_close;
 };
+
+struct EMA{
+    double value;
+    int num_bar;
+};
