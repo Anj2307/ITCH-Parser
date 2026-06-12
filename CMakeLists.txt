@@ -12,6 +12,7 @@ add_executable(itch_parser
     src/file_reader.cpp
     src/decoder.cpp
     src/order_book.cpp
+    src/indicators.cpp
 )
 
 target_link_libraries(itch_parser ws2_32)

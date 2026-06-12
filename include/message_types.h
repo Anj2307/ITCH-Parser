@@ -142,3 +142,11 @@ struct OHLCVBar{
     uint64_t volume;
     bool initialized;
 };
+
+struct RSI{
+    double value;
+    double avg_loss;
+    double avg_gain;
+    int num_bar;
+    double prev_close;
+};

@@ -5,7 +5,7 @@
 #include "file_reader.h"
 #include "decoder.h"
 #include "order_book.h"
-
+#include "indicators.h"
 int main() {
     FileReader reader("data/01302019.NASDAQ_ITCH50");
     
@@ -16,6 +16,7 @@ int main() {
 
     Decoder decoder;
     OrderBook book;
+    Indicators ind;
     book.set_symbol("AAPL    ");
 
     uint8_t buf[64];
@@ -113,6 +114,7 @@ int main() {
             OHLCVBar bar = book.get_bar();
             if(bar.initialized){
             uint64_t seconds = bar.timestamp / 1000000000ULL;
+            ind.rsi(bar.close / 10000.0);
             fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
                 seconds / 3600, (seconds % 3600) / 60,
                 bar.open / 10000.0,
@@ -134,6 +136,7 @@ int main() {
                       << " spread: " << book.spread()
                       << " mid_price: " << book.mid_price()
                       <<" book_imbalance: " << book.book_imbalance()
+                      << " rsi: " << ind.get_rsi()
                       << std::endl;
             std::cout << " raw timestamp: " << book.last_timestamp() << std::endl;
         }
