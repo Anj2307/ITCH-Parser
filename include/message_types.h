@@ -161,3 +161,10 @@ struct MACD{
     double signal_line;
     double histogram;
 };
+
+
+struct ATR{
+    double value;
+    double prev_close;
+    int num_bars;
+};

@@ -1,8 +1,9 @@
 #include "indicators.h"
 #include <winsock2.h>
 #include<iostream>
+#include<cmath>
 
-Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(false){
+Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(false),atr_ready_(false){
     curruent_rsi_.value=0;
     curruent_rsi_.avg_loss=0;
     curruent_rsi_.avg_gain=0;
@@ -25,6 +26,10 @@ Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(f
     macd_.macd_line=0;
     macd_.signal_line=0;
     macd_. histogram=0;
+
+    atr_.value=0;
+    atr_.prev_close=0;
+    atr_.num_bars=0;
 }
 
 
@@ -149,4 +154,46 @@ void Indicators:: get_macd() const{
                   << std:: endl;
     }
 }
+
+double Indicators:: tr(double high, double close, double low){
+    return std::max(high-low, std::max(std::fabs(high-close), std::fabs(low-close)));
+}
+
+void Indicators:: atr(double high, double close, double low){
+    if(atr_.num_bars==0)
+    {
+        atr_.num_bars++;
+        atr_.prev_close=close;
+        atr_ready_=false;
+        return;
+    }
+    if(atr_.num_bars<15){
+        atr_.value+=  tr(high,atr_.prev_close,low);
+        atr_.num_bars++;
+        atr_.prev_close=close;
+        atr_ready_=false;
+        return;
+    }
+    if(atr_.num_bars==15){
+        atr_.value+=tr(high,atr_.prev_close,low);
+        atr_.value/=14;
+        atr_.prev_close=close;
+        atr_ready_=true;
+        atr_.num_bars++;
+        return;
+    }
+    atr_.value= (atr_.value*13 + tr(high,atr_.prev_close,low))/14;
+    atr_.prev_close=close;
+    atr_ready_=true;
+    atr_.num_bars++;
+    return;
+
+}
+
+double Indicators:: get_atr() const{
+    if(!atr_ready_) return 0.0;
+    return atr_.value;
+}
+
+
 
