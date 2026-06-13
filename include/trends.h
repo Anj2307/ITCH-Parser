@@ -9,4 +9,4 @@ class Trends{
         double score_macd(const Indicators& ind);
         double score_bb(const Indicators& ind, double price);
         double score_obv(const Indicators& ind);
-}
+};

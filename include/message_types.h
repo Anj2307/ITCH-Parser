@@ -183,3 +183,12 @@ struct OBV{
     double prev_close;
     int64_t prev_value;
 };
+
+struct TrendResult {
+    double score;
+    double rsi_score;
+    double ema_score;
+    double macd_score;
+    double bb_score;
+    double obv_score;
+};

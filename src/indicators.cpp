@@ -256,11 +256,9 @@ double Indicators :: get_obv() const{
 }
 
 MACD Indicators :: get_macd_full() const{
-    if(!macd_ready_) return NULL;
     return macd_;
 }
 BollingerBands Indicators :: get_bb_full() const{
-    if(!bb_ready_) return NULL;
     return bb_;
 }
 
@@ -268,7 +266,7 @@ bool Indicators:: is_rsi_ready() const{
     return rsi_ready_;
 }
 
-bool Indicators:: ema_ready_() const{
+bool Indicators:: is_ema_ready() const{
     return ema_ready_;
 }
 
