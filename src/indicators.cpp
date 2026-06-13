@@ -237,13 +237,17 @@ void Indicators :: get_bb() const{
 }
 
 void Indicators :: obv(double close, int32_t volume){
+    obv_.prev_value=obv_.value;
     if(close>obv_.prev_close) {
+        
         obv_.value+=(int64_t) volume;
+
     }
     else if(close<obv_.prev_close)
     {
         obv_.value-=(int64_t) volume;
     }
+
     obv_.prev_close=close;
 }
 

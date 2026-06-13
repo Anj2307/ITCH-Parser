@@ -181,4 +181,5 @@ struct BollingerBands{
 struct OBV{
     int64_t value;
     double prev_close;
+    int64_t prev_value;
 };
