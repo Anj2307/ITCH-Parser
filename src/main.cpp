@@ -119,6 +119,7 @@ int main() {
             ind.macd(bar.close / 10000.0);
             ind.bb(bar.close / 10000.0);
             ind.atr(bar.high/ 10000.0, bar.close/ 10000.0, bar.low/ 10000.0);
+            ind.obv(bar.close/10000.0,bar.volume);
             fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
                 seconds / 3600, (seconds % 3600) / 60,
                 bar.open / 10000.0,
@@ -143,7 +144,7 @@ int main() {
                       << " rsi: " << ind.get_rsi()
                       <<" ema: " <<ind.get_ema()
                       <<" atr: " << ind.get_atr()
-                      
+                      <<" obv: " << ind.get_obv()
 
                       << std::endl;
             std::cout << " raw timestamp: " << book.last_timestamp() << std::endl;

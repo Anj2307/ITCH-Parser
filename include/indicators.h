@@ -19,6 +19,8 @@ class Indicators {
         double tr(double high, double close, double low);
         void bb(double close);
         void get_bb() const;
+        void obv(double close, int32_t volume);
+        double get_obv() const;
     
     private:
         bool rsi_ready_;
@@ -34,4 +36,5 @@ class Indicators {
         EMA ema_signal_;
         ATR atr_;
         BollingerBands bb_;
+        OBV obv_;
 };

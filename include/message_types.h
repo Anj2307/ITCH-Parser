@@ -177,3 +177,8 @@ struct BollingerBands{
     int head;
     int num_bar;
 };
+
+struct OBV{
+    int64_t value;
+    double prev_close;
+};

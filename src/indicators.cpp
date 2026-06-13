@@ -37,6 +37,9 @@ Indicators :: Indicators() : rsi_ready_(false), ema_ready_(false), macd_ready_(f
     bb_.upper = 0;
     bb_.middle = 0;
     bb_.lower = 0;
+
+    obv_.prev_close=0;
+    obv_.value=0;
 }
 
 
@@ -233,4 +236,18 @@ void Indicators :: get_bb() const{
     return;
 }
 
+void Indicators :: obv(double close, int32_t volume){
+    if(close>obv_.prev_close) {
+        obv_.value+=(int64_t) volume;
+    }
+    else if(close<obv_.prev_close)
+    {
+        obv_.value-=(int64_t) volume;
+    }
+    obv_.prev_close=close;
+}
+
+double Indicators :: get_obv() const{
+    return static_cast<double> (obv_.value);
+}
 
