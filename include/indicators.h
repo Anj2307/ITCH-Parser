@@ -8,6 +8,7 @@ class Indicators {
         double ema() const;
         double bollinger_bands() const;
         void get_macd() const;
+        MACD get_macd_full() const;
         void macd(double close);
         Indicators();
         double get_rsi() const;
@@ -19,8 +20,15 @@ class Indicators {
         double tr(double high, double close, double low);
         void bb(double close);
         void get_bb() const;
+        BollingerBands get_bb_full() const;
         void obv(double close, int32_t volume);
         double get_obv() const;
+        bool is_rsi_ready() const;
+        bool is_ema_ready() const;
+        bool is_macd_ready() const;
+        bool is_bb_ready() const;
+        bool is_atr_ready() const;
+
     
     private:
         bool rsi_ready_;

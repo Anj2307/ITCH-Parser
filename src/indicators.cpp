@@ -255,3 +255,32 @@ double Indicators :: get_obv() const{
     return static_cast<double> (obv_.value);
 }
 
+MACD Indicators :: get_macd_full() const{
+    if(!macd_ready_) return NULL;
+    return macd_;
+}
+BollingerBands Indicators :: get_bb_full() const{
+    if(!bb_ready_) return NULL;
+    return bb_;
+}
+
+bool Indicators:: is_rsi_ready() const{
+    return rsi_ready_;
+}
+
+bool Indicators:: ema_ready_() const{
+    return ema_ready_;
+}
+
+bool Indicators:: is_macd_ready() const{
+    return macd_ready_;
+}
+
+bool Indicators:: is_bb_ready() const{
+    return bb_ready_;
+}
+
+bool Indicators:: is_atr_ready() const{
+    return atr_ready_;
+}
+
