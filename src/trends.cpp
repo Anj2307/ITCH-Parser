@@ -81,5 +81,18 @@ double Trends::score_bb(const Indicators& ind, double price) {
 }
 
 double Trends::score_obv(const Indicators& ind) {
-    return 0;
+    OBV obv=ind.get_obv_full();
+    MACD macd=ind.get_macd_full();
+    int64_t value=obv.value;
+    int64_t prev_val=obv.prev_value;
+    double ema=ind.get_ema();
+    double price =ind.get_ema();
+
+    bool obv_rising=value>prev_val;
+    bool price_rising=macd.macd_line >0;
+
+    if(obv_rising && price_rising) return +20;
+    else if (obv_rising && !price_rising) return +10;
+    else if(!obv_rising && price_rising)  return -10;
+    else return -20;
 }

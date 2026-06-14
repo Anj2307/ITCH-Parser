@@ -255,6 +255,10 @@ double Indicators :: get_obv() const{
     return static_cast<double> (obv_.value);
 }
 
+OBV Indicators :: get_obv_full() const{
+    return obv_;
+}
+
 MACD Indicators :: get_macd_full() const{
     return macd_;
 }

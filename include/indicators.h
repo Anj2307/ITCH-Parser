@@ -28,6 +28,7 @@ class Indicators {
         bool is_macd_ready() const;
         bool is_bb_ready() const;
         bool is_atr_ready() const;
+        OBV get_obv_full() const;
 
     
     private:
