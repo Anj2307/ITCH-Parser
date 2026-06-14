@@ -7,6 +7,7 @@
 #include "order_book.h"
 #include "indicators.h"
 #include "trends.h"
+#include "signals.h"
 int main() {
     FileReader reader("data/01302019.NASDAQ_ITCH50");
     
@@ -20,6 +21,8 @@ int main() {
     Indicators ind;
     TrendResult trend;
     Trends trends;
+    SignalResult sig;
+    Signals signals;
     book.set_symbol("AAPL    ");
 
     uint8_t buf[64];
@@ -125,7 +128,7 @@ int main() {
             ind.obv(bar.close/10000.0,bar.volume);
             
             trend=trends.calculate(ind,book.mid_price());
-
+            sig=signals.calculate(trend,book.mid_price());
             fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
                 seconds / 3600, (seconds % 3600) / 60,
                 bar.open / 10000.0,
@@ -157,7 +160,14 @@ int main() {
             std::cout << " raw timestamp: " << book.last_timestamp() << std::endl;
             ind.get_macd();
             ind.get_bb();
-        }
+
+            if (sig.signal == Signal::BUY)
+                std::cout << "SIGNAL: BUY  at " << book.mid_price() << "\n";
+            else if (sig.signal == Signal::SELL)
+                std::cout << "SIGNAL: SELL at " << book.mid_price() << "\n";
+            else if (sig.signal == Signal::EXIT)
+                std::cout << "SIGNAL: EXIT at " << book.mid_price() << "\n";
+         }
     }
     fclose(csv);
     

@@ -14,6 +14,7 @@ add_executable(itch_parser
     src/order_book.cpp
     src/indicators.cpp
     src/trends.cpp
+    src/signals.cpp
 )
 
 target_link_libraries(itch_parser ws2_32)
