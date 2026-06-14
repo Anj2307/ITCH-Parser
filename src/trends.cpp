@@ -46,7 +46,20 @@ double Trends::score_ema(const Indicators& ind, double price) {
 }
 
 double Trends::score_macd(const Indicators& ind) {
-    return 0;
+    if(!ind.is_macd_ready()) return 0;
+
+    MACD macd=ind.get_macd_full();
+    double macd_line=macd.macd_line;
+    double histogram=macd.histogram;
+    double score=0;
+
+    if(macd_line >0) score+=10;
+    else score-=10;
+
+    if(histogram>0) score+=10;
+    else score-=10;
+
+    return score;
 }
 
 double Trends::score_bb(const Indicators& ind, double price) {
