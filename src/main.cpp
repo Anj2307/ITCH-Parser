@@ -27,6 +27,8 @@ int main() {
 
     uint8_t buf[64];
     uint16_t length;
+
+    Signal prev_sig = Signal::HOLD;
     
     int msg_count = 0;
     auto start =std:: chrono:: high_resolution_clock::now();
@@ -161,17 +163,26 @@ int main() {
             ind.get_macd();
             ind.get_bb();
 
-            if (sig.signal == Signal::BUY)
-                std::cout << "SIGNAL: BUY  at " << book.mid_price() << "\n";
-            else if (sig.signal == Signal::SELL)
-                std::cout << "SIGNAL: SELL at " << book.mid_price() << "\n";
-            else if (sig.signal == Signal::EXIT)
-                std::cout << "SIGNAL: EXIT at " << book.mid_price() << "\n";
+            
          }
+
+        
+
+        if (sig.signal != Signal::HOLD && sig.signal != prev_sig) {
+        if (sig.signal == Signal::BUY)
+            std::cout << "SIGNAL: BUY  at " << book.mid_price() << "\n";
+        else if (sig.signal == Signal::SELL)
+            std::cout << "SIGNAL: SELL at " << book.mid_price() << "\n";
+        else if (sig.signal == Signal::EXIT)
+            std::cout << "SIGNAL: EXIT at " << book.mid_price() << "\n";
+    
+        prev_sig = sig.signal; 
+}
+         
     }
     fclose(csv);
     
-
+    
     auto end = std:: chrono:: high_resolution_clock:: now();
 
     std::cout << "Total messages: " << msg_count << std::endl;
@@ -180,5 +191,7 @@ int main() {
     auto duration=std:: chrono:: duration_cast<std:: chrono::nanoseconds>(end-start);
     std:: cout<< duration.count() << " ns"<<std:: endl;
     std::cout << " VWAP: " << book.vwap();
+
+
     return 0;
 }
