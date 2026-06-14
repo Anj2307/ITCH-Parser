@@ -29,7 +29,20 @@ double Trends::score_rsi(const Indicators& ind) {
 }
 
 double Trends::score_ema(const Indicators& ind, double price) {
-    return 0;
+    if(!ind.is_ema_ready()) return 0;
+    if(!ind.is_atr_ready()) return 0;
+
+    double ema = ind.get_ema();
+    double atr=ind.get_atr();
+    double diff=price-ema;
+
+    if(diff > atr) return +20;
+    else if (diff>atr*0.5) return +10;
+    else if (diff>0) return +5;
+    else if(diff>-atr*0.5) return -5;
+    else if (diff>-atr) return -10;
+    else  return -20;
+
 }
 
 double Trends::score_macd(const Indicators& ind) {
