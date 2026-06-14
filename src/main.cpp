@@ -6,6 +6,7 @@
 #include "decoder.h"
 #include "order_book.h"
 #include "indicators.h"
+#include "trends.h"
 int main() {
     FileReader reader("data/01302019.NASDAQ_ITCH50");
     
@@ -17,6 +18,8 @@ int main() {
     Decoder decoder;
     OrderBook book;
     Indicators ind;
+    TrendResult trend;
+    Trends trends;
     book.set_symbol("AAPL    ");
 
     uint8_t buf[64];
@@ -120,6 +123,9 @@ int main() {
             ind.bb(bar.close / 10000.0);
             ind.atr(bar.high/ 10000.0, bar.close/ 10000.0, bar.low/ 10000.0);
             ind.obv(bar.close/10000.0,bar.volume);
+            
+            trend=trends.calculate(ind,book.mid_price());
+
             fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
                 seconds / 3600, (seconds % 3600) / 60,
                 bar.open / 10000.0,
@@ -145,6 +151,7 @@ int main() {
                       <<" ema: " <<ind.get_ema()
                       <<" atr: " << ind.get_atr()
                       <<" obv: " << ind.get_obv()
+                      <<" trend_score: "<< trend.score
 
                       << std::endl;
             std::cout << " raw timestamp: " << book.last_timestamp() << std::endl;
