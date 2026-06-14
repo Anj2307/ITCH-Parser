@@ -63,7 +63,21 @@ double Trends::score_macd(const Indicators& ind) {
 }
 
 double Trends::score_bb(const Indicators& ind, double price) {
-    return 0;
+    if(!ind.is_bb_ready()) return 0;
+
+    BollingerBands bb=ind.get_bb_full();
+    double upper=bb.upper;
+    double middle=bb.middle;
+    double lower=bb.lower;
+    double width=upper-lower;
+
+    if(price>upper) return +20;
+    else if(price>middle+width*0.25)  return +10;
+    else if(price>middle) return +5;
+    else if(price>middle-width*0.25) return -5;
+    else if(price>lower) return -10;
+    else return -20;
+
 }
 
 double Trends::score_obv(const Indicators& ind) {
