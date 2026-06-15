@@ -7,7 +7,7 @@ Patterns::Patterns() : has_prev_prev_(false) {
 }
 
 double Patterns::body(OHLCVBar bar) {
-    return std::abs(bar.close - bar.open);
+    return std::fabs(bar.close - bar.open);
 }
 
 double Patterns::upper_wick(OHLCVBar bar) {
@@ -41,7 +41,7 @@ PatternResult Patterns::detect(OHLCVBar current, OHLCVBar previous) {
 
     double prev_body  = body(previous);
     double prev_range = total_range(previous);
-    
+
     if (curr_range == 0) return result;
 
     // DOJI

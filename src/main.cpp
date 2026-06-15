@@ -8,6 +8,7 @@
 #include "indicators.h"
 #include "trends.h"
 #include "signals.h"
+#include "patterns.h"
 int main() {
     FileReader reader("data/01302019.NASDAQ_ITCH50");
     
@@ -23,6 +24,10 @@ int main() {
     Trends trends;
     SignalResult sig;
     Signals signals;
+    Patterns patterns;
+    PatternResult pattern;
+    OHLCVBar prev_bar;
+    prev_bar.initialized = false;
     book.set_symbol("AAPL    ");
 
     uint8_t buf[64];
@@ -131,14 +136,19 @@ int main() {
             
             trend=trends.calculate(ind,book.mid_price());
             sig=signals.calculate(trend,book.mid_price());
-            fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
-                seconds / 3600, (seconds % 3600) / 60,
-                bar.open / 10000.0,
-                bar.high / 10000.0,
-                bar.low / 10000.0,
-                bar.close / 10000.0,
-                (unsigned long long)bar.volume
-            );
+            // fprintf(ohlcv_csv, "%02llu:%02llu,%.4f,%.4f,%.4f,%.4f,%llu\n",
+            //     seconds / 3600, (seconds % 3600) / 60,
+            //     bar.open / 10000.0,
+            //     bar.high / 10000.0,
+            //     bar.low / 10000.0,
+            //     bar.close / 10000.0,
+            //     (unsigned long long)bar.volume
+            // );
+            if (prev_bar.initialized) {
+            pattern = patterns.detect(bar, prev_bar);
+            }
+            prev_bar = bar; 
+
         }
             book.reset_bar(book.last_timestamp());
 }
@@ -163,7 +173,30 @@ int main() {
             ind.get_macd();
             ind.get_bb();
 
-            
+            if (prev_bar.initialized) {
+                if (pattern.doji)
+                    std::cout << "PATTERN: Doji\n";
+                if (pattern.hammer)
+                    std::cout << "PATTERN: Hammer — bullish reversal\n";
+                if (pattern.shooting_star)
+                    std::cout << "PATTERN: Shooting Star — bearish reversal\n";
+                if (pattern.marubozu_bull)
+                    std::cout << "PATTERN: Bullish Marubozu — strong uptrend\n";
+                if (pattern.marubozu_bear)
+                    std::cout << "PATTERN: Bearish Marubozu — strong downtrend\n";
+                if (pattern.bullish_engulfing)
+                    std::cout << "PATTERN: Bullish Engulfing — strong buy\n";
+                if (pattern.bearish_engulfing)
+                    std::cout << "PATTERN: Bearish Engulfing — strong sell\n";
+                if (pattern.bullish_harami)
+                    std::cout << "PATTERN: Bullish Harami — potential reversal up\n";
+                if (pattern.bearish_harami)
+                    std::cout << "PATTERN: Bearish Harami — potential reversal down\n";
+                if (pattern.morning_star)
+                    std::cout << "PATTERN: Morning Star — strong reversal up\n";
+                if (pattern.evening_star)
+                    std::cout << "PATTERN: Evening Star — strong reversal down\n";
+            }
          }
 
         
