@@ -14,6 +14,7 @@ add_executable(itch_parser
     src/order_book.cpp
     src/indicators.cpp
     src/trends.cpp
+    src/patterns.cpp
     src/signals.cpp
 )
 
